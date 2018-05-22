@@ -1,10 +1,15 @@
+/* 
+    These are test cases for APIs shared by the server.
+    The APIs tested for public and protected routes with Token initialized.
+*/
+
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const should = chai.should();
 const server = require('../app');
 
-chai.use(chaiHttp);
+chai.use(chaiHttp); //Connect Http to the server
 
 describe('/GET Token',() => {
     it('it should not run without username and password as query string',(done) => {

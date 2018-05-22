@@ -54,15 +54,20 @@ app.get('/api/protected/jsonpatch', ensureToken, (req, res) => {
             res.sendStatus(403);
         }
 
+        //This will check the query string variables for Json Object and Json Patch Object
         if (req.query.jsonObj !== undefined && req.query.jsonPatch !== undefined) {
+
 
             let document = JSON.parse(req.query.jsonObj);
 
+            //Extracting keys and values from the Json Object
+            //The Object should be a correct JSON e.g. {"firstname" : "john"}
             let keys = Object.keys(JSON.parse(req.query.jsonPatch));
             let values = Object.values(JSON.parse(req.query.jsonPatch));
 
             let patch = [];
 
+            //The loop will add the patches that we want to add in the Json Object
             for (let i = 0; i < keys.length; i++) {
                 patch.push({
                     op: 'add',
@@ -71,26 +76,29 @@ app.get('/api/protected/jsonpatch', ensureToken, (req, res) => {
                 });
             }
 
+            //Send the new Json Object back to the client
             res.json({
                 document: jsonPatch.applyPatch(document, patch)
             })
 
         } else {
             res.json({
-                msg: `insert JSON object and JSON patch Object in query string e.g. jsonObj={firstname:'John'}&&jsonPatch={lastname:'doe'}
-                `
+                msg: `insert JSON object and JSON patch Object in query string e.g. jsonObj={"firstname":"John"}&&jsonPatch={"lastname":"doe"}`
             });
         }
     });
 });
 
 app.get('/api/protected/imagereq', ensureToken, (req, res) => {
+    //This API will download image and then resize it in the folder.
+    
     jwt.verify(req.token, process.env.TOKEN_KEY, (err, data) => {
         //Authorize token generated from public API
 
         if (err) {
             res.sendStatus(403);
         }
+        
         if (req.query.imgurl !== undefined) {
             downloadImage(req.query.imgurl);
 
